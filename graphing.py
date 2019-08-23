@@ -17,8 +17,6 @@ with open('comments.json') as c:
 def sortFirst(val):
     return val[0]
 
-# print(json_data['posts'][0]['title'])
-
 dates_posts = []
 for post in json_data_posts['posts']:
     dates_posts.append((int(post['created_utc']), float(post['sentiment'])))
@@ -31,7 +29,6 @@ dates_posts.sort(key=sortFirst, reverse=False)
 dates_comments.sort(key=sortFirst, reverse=False)
 bar_time = []   #x-axis
 bar_sentiment = []  #y-axis
-time_posts = []
 sentiment_posts = []
 time_comments = []
 sentiment_comments = []
@@ -52,26 +49,20 @@ def populate_bar(time_type, sentiment_type, arr):
             sentiment_type.append(interval_sentiment)
             start_index = i
 
-populate_bar(time_posts, sentiment_posts, dates_posts)
+populate_bar(bar_time, sentiment_posts, dates_posts)
 populate_bar(time_comments, sentiment_comments, dates_comments)
-
-# print(len(time_posts))
-# print(len(time_comments))
-
-for date in time_posts:
-    bar_time.append(date)
 
 for i in range(len(sentiment_posts)):
     bar_sentiment.append((sentiment_posts[i]+sentiment_comments[i])/2)
 
 y_pos = np.arange(len(bar_time))
-bar = plt.bar(y_pos, bar_sentiment, align='center', alpha=0.5)
+bar = plt.bar(y_pos, bar_sentiment, align='center', alpha=0.5, color="purple")
 
-plt.title('Yandhi sentiment on r/Kanye over time')
+plt.title('Yandhi sentiment on r/Kanye (1 bar = average sentiment over a week)')
 plt.xlabel('Dates of posts & comments')
 plt.ylabel('Sentiment (-1.0 to 1.0)')
 # plt.xticks([0,10,20,30], ['a', 'b', 'c', 'd'])
-plt.xticks(range(0,len(bar_time),9), bar_time[0:len(bar_time):9])
+plt.xticks(range(0,len(bar_time),5), bar_time[0:len(bar_time):5])
 plt.tick_params(axis='x',which='both',bottom=True,top=False,labelbottom=True, labelrotation=15)
 
 plt.show()
