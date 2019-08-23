@@ -11,8 +11,8 @@ from psaw import PushshiftAPI
 #my client_id, client_secret, and user_agent are in my praw.ini file
 reddit = praw.Reddit('bot1')
 api = PushshiftAPI(reddit)
-#around the time the album was announced
-start_date = int(datetime(2018, 9, 20).timestamp())
+#date the album was announced
+start_date = int(datetime(2018, 9, 17).timestamp())
 
 post_data = {}
 post_data["posts"] = []
@@ -28,7 +28,7 @@ for entry in api.search_submissions(after=start_date, subreddit='Kanye', q='Yand
         new_entry = {"id":entry.id,
                      "title":entry.title,
                      "selftext":entry.selftext,
-                     "created_utc":str(entry.created_utc),
+                     "created_utc":str(int(entry.created_utc)),
                      "sentiment":str(max(tsent.sentiment.polarity,stsent.sentiment.polarity))
                      }
         post_data["posts"].append(new_entry)
@@ -38,14 +38,14 @@ for entry in api.search_comments(after=start_date, subreddit='Kanye', q='Yandhi'
     if bsent.sentiment.polarity != 0 or bsent.sentiment.subjectivity != 0:
         new_entry = {"id":entry.id,
                      "body":entry.body,
-                     "created_utc":str(entry.created_utc),
+                     "created_utc":str(int(entry.created_utc)),
                      "sentiment":str(bsent.sentiment.polarity)
                      }
         comment_data["comments"].append(new_entry)
 
 
 with open('posts.json', 'w') as yandhi:
-        json.dump(comment_data, yandhi, indent=2)
+        json.dump(post_data, yandhi, indent=2)
 
 with open('comments.json', 'w') as yandhi:
         json.dump(comment_data, yandhi, indent=2)
