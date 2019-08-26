@@ -1,9 +1,11 @@
+#Python3
 import sys, json, time, pprint, math
 import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.mlab as mlab
 from datetime import datetime
 
+#Command line arguments
 sub_reddit = sys.argv[1]
 
 file_name = sys.argv[2]
@@ -20,18 +22,20 @@ with open(file_name + '_comments.json') as c:
 def sortFirst(val):
     return val[0]
 
-dates_posts = []
+#Add the time and sentiment values of posts to an array
+posts = []
 for post in json_data_posts['posts']:
-    dates_posts.append((int(post['created_utc']), float(post['sentiment'])))
+    posts.append((int(post['created_utc']), float(post['sentiment'])))
 
-dates_comments = []
+#add the time and sentiment values of comments to an array
+comments = []
 for comment in json_data_comments['comments']:
-    dates_comments.append((int(comment['created_utc']),  \
+    comments.append((int(comment['created_utc']),  \
                            float(comment['sentiment'])))
 
-#Sort by date
-dates_posts.sort(key=sortFirst, reverse=False)
-dates_comments.sort(key=sortFirst, reverse=False)
+#Sort by ascending date
+posts.sort(key=sortFirst, reverse=False)
+comments.sort(key=sortFirst, reverse=False)
 
 bar_date = []           #x-axis
 bar_sentiment = []      #y-axis
@@ -40,7 +44,9 @@ post_sentiment = []
 comment_dates = []
 comment_sentiment = []
 
-def populate_bar(time, sentiment, arr):
+#Convert time from UTC to a date, then if the array entry is within the
+    #current week,
+def populate_bar(date, sentiment, arr):
 
     start_index = 0
     for i in range(len(arr)):
@@ -49,17 +55,20 @@ def populate_bar(time, sentiment, arr):
         difference = current_date - start_date
         if difference.days > 6:
             interval = []
+            #Place all values within a week as a single interval entry
             for j in range(start_index, i):
                 interval.append(arr[j][1])
 
-            time.append(str(start_date))
+            #date is the same for all the data points within that week
+            date.append(str(start_date))
+            #sentiment must be averaged amongst all posts/comments
             avg_sentiment = np.average(interval)
             sentiment.append(avg_sentiment)
             start_index = i
 
 
-populate_bar(bar_date, post_sentiment, dates_posts)
-populate_bar(comment_dates, comment_sentiment, dates_comments)
+populate_bar(bar_date, post_sentiment, posts)
+populate_bar(comment_dates, comment_sentiment, comments)
 
 for i in range(len(post_sentiment)):
     bar_sentiment.append((post_sentiment[i] + comment_sentiment[i]) / 2)

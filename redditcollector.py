@@ -4,6 +4,7 @@ from textblob import TextBlob
 from datetime import datetime
 from psaw import PushshiftAPI
 
+#Command line arguments
 sub_reddit = sys.argv[1]
 query_name = sys.argv[2]
 
@@ -38,6 +39,7 @@ for entry in api.search_submissions(after=start_date, subreddit=sub_reddit, \
         or stsent.sentiment.polarity != 0       \
         or stsent.sentiment.subjectivity != 0:
         #If analyzer could gather anything at all, include data point
+        #Technically only time and sentiment needed, but including more metadata
         new_entry = {"id" : entry.id,
                      "title" : entry.title,
                      "selftext" : entry.selftext,
@@ -52,6 +54,7 @@ for entry in api.search_comments(after=start_date, subreddit='Kanye', \
                                  q='Yandhi'):
     bsent = TextBlob(entry.body)        #Body sentiment
     if bsent.sentiment.polarity != 0 or bsent.sentiment.subjectivity != 0:
+        #If analyzer could gather anything at all, include data point
         new_entry = {"id" : entry.id,
                      "body" : entry.body,
                      "created_utc" : str(int(entry.created_utc)),
@@ -60,8 +63,8 @@ for entry in api.search_comments(after=start_date, subreddit='Kanye', \
         comment_data["comments"].append(new_entry)
 
 
-with open(file_name + '_posts.json', 'w') as yandhi:
-        json.dump(post_data, yandhi, indent=2)
+with open(file_name + '_posts.json', 'w') as p:
+        json.dump(post_data, f, indent=2)
 
-with open(file_name + '_comments.json', 'w') as yandhi:
-        json.dump(comment_data, yandhi, indent=2)
+with open(file_name + '_comments.json', 'w') as c:
+        json.dump(comment_data, f, indent=2)
