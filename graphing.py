@@ -8,15 +8,15 @@ from datetime import datetime
 #Command line arguments
 sub_reddit = sys.argv[1]
 
-file_name = sys.argv[2]
-extension_position = file_name.find('.json')
+query_word = sys.argv[2]
+extension_position = query_word.find('.json')
 if(extension_position != -1):
-    file_name = file_name[:extension_position]
+    query_word = query_word[:extension_position]
 
-with open(file_name + '_posts.json') as p:
+with open(query_word + '_posts.json') as p:
     json_data_posts = json.load(p)
 
-with open(file_name + '_comments.json') as c:
+with open(query_word + '_comments.json') as c:
     json_data_comments = json.load(c)
 
 def sortFirst(val):
@@ -75,13 +75,11 @@ for i in range(len(post_sentiment)):
 
 y_pos = np.arange(len(bar_date))
 bar = plt.bar(y_pos, bar_sentiment, align='center', alpha=0.5, color="purple")
-
-plt.title(file_name + ' sentiment on r/' + sub_reddit +     \
+plt.title(query_word + ' sentiment on r/' + sub_reddit +     \
           ' (1 bar = average sentiment in a week)')
-plt.xlabel('Dates of posts & comments')
 plt.ylabel('Sentiment (-1.0 to 1.0)')
 plt.xticks(range(0, len(bar_date), 5), bar_date[0:len(bar_date):5])
 plt.tick_params(axis='x', which='both', bottom=True, top=False,    \
                 labelbottom=True, labelrotation=15)
 
-plt.show()
+plt.savefig(query_word + '_sentiment.png')
