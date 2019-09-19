@@ -8,14 +8,14 @@ from psaw import PushshiftAPI
 sub_reddit = sys.argv[1]
 query_name = sys.argv[2]
 
-file_name = sys.argv[3]
+file_name = sys.argv[2] #file name same as query_name
 extension_position = file_name.find('.json')
 if(extension_position != -1):
     file_name = file_name[0:extension_position]
 
-month = int(sys.argv[4])
-day = int(sys.argv[5])
-year = int(sys.argv[6])
+month = int(sys.argv[3])
+day = int(sys.argv[4])
+year = int(sys.argv[5])
 
 
 #My client_id, client_secret, and user_agent are in my private praw.ini file
@@ -50,8 +50,8 @@ for entry in api.search_submissions(after=start_date, subreddit=sub_reddit, \
         post_data["posts"].append(new_entry)
 
 
-for entry in api.search_comments(after=start_date, subreddit='Kanye', \
-                                 q='Yandhi'):
+for entry in api.search_comments(after=start_date, subreddit=sub_reddit, \
+                                 q=query_name):
     bsent = TextBlob(entry.body)        #Body sentiment
     if bsent.sentiment.polarity != 0 or bsent.sentiment.subjectivity != 0:
         #If analyzer could gather anything at all, include data point
@@ -64,7 +64,7 @@ for entry in api.search_comments(after=start_date, subreddit='Kanye', \
 
 
 with open(file_name + '_posts.json', 'w') as p:
-        json.dump(post_data, f, indent=2)
+        json.dump(post_data, p, indent=2)
 
 with open(file_name + '_comments.json', 'w') as c:
-        json.dump(comment_data, f, indent=2)
+        json.dump(comment_data, c, indent=2)
