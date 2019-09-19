@@ -1,3 +1,5 @@
+NOTE: praw, psaw, json, and textblob Python packages have to be installed before the program can work
+
 # Subreddit Sentiment Analysis
 
 Provided a subreddit, query word, and date (month day year), redditcollector.py will search that subreddit for all posts and comments that contain the query from the date provided to the current date. The posts and comments are all run through a sentiment analyzer and given a score from -1.0 to 1.0. That score, along with metadata and the actual post or comment, are placed in json files '[query]_posts.json' and '[query]_comments.json'.
